@@ -4,6 +4,7 @@ __version__ = '0.2.0'
 import threading
 import os
 import sys
+import time
 import traceback
 import pdb
 
@@ -74,6 +75,7 @@ def _verify(function):
                 with _export_lock:
                     with open(pjoin(gpio_root, 'export'), 'w') as f:
                         _write(f, pin)
+                time.sleep(.1)  # Wait a short time for sysfs to settle
             value = open(pjoin(ppath, 'value'), FMODE)
             direction = open(pjoin(ppath, 'direction'), FMODE)
             _open[pin] = PinState(value=value, direction=direction)
