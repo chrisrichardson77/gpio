@@ -117,7 +117,7 @@ def cleanup(pin=None, assert_exists=False):
 
 
 @_verify
-def setup(pin, mode, pullup=None, initial=False):
+def setup(pin, mode, pullup=None, initial=False, set_initial=True):
     '''Setup pin with mode IN or OUT.
 
     Args:
@@ -125,7 +125,8 @@ def setup(pin, mode, pullup=None, initial=False):
         mode (str): use either gpio.OUT or gpio.IN
         pullup (None): rpio compatibility. If anything but None, raises
             value Error
-        pullup (bool, optional): Initial pin value. Default is False
+        initial (bool, optional): Initial pin value. Default is False
+        set_initial (bool, optional): Write initial value to pin iff mode is OUT. Default is True
     '''
     if pullup is not None:
         raise ValueError("sysfs does not support pullups")
@@ -136,11 +137,8 @@ def setup(pin, mode, pullup=None, initial=False):
     log.debug("Setup {0}: {1}".format(pin, mode))
     f = _open[pin].direction
     _write(f, mode)
-    if mode == OUT:
-        if initial:
-            set(pin, 1)
-        else:
-            set(pin, 0)
+    if mode == OUT and set_initial:
+        set(pin, 1 if initial else 0)
 
 
 @_verify
